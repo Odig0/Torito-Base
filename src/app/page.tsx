@@ -151,8 +151,8 @@ export default function Page() {
 
           <div className="flex gap-4 flex-wrap justify-center">
             <BalancePill
-              label={<>💰 Tu USDT:</>}
-              value={isLoadingUsdtBalance ? undefined : `${fmt(walletUsdtBalance)} USDT`}
+              label={<>💰 Tu ETH:</>}
+              value={isLoadingUsdtBalance ? undefined : `${fmt(walletUsdtBalance, "es-BO", 6)} ETH`}
               skeleton={isLoadingUsdtBalance}
             />
             <BalancePill
@@ -161,7 +161,7 @@ export default function Page() {
                   <span style={{ display: "inline-block", transform: "scaleX(-1)" }}>🐂</span> En Torito:
                 </>
               }
-              value={isLoadingBalance ? undefined : `${fmt(parseFloat(formattedShares), "es-BO", 6)} USDT`}
+              value={isLoadingBalance ? undefined : `${fmt(parseFloat(formattedShares), "es-BO", 6)} ETH`}
               skeleton={isLoadingBalance}
             />
           </div>

@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useBalance, useAccount } from "wagmi";
 
 export const useUSDTBalance = () => {
-  const [balance, setBalance] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const { address } = useAccount();
 
-  useEffect(() => {
-    // Simulación de carga de balance
-    setTimeout(() => {
-      // Mock: mostrar un balance de ejemplo (1000 USDT)
-      setBalance(1000);
-      setIsLoading(false);
-    }, 500);
-  }, []);
+  // Por ahora usamos el balance nativo de ETH
+  // TODO: Cambiar a token USDT cuando esté disponible
+  const { data, isLoading } = useBalance({
+    address: address,
+  });
+
+  // ETH tiene 18 decimales, lo convertimos a número
+  // Mostraremos el balance en ETH como si fuera USDT por ahora
+  const balance = data ? parseFloat(data.formatted) : 0;
 
   return {
     balance,

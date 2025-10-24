@@ -1,24 +1,42 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useReadContract, useAccount } from "wagmi";
+import {
+  TORITO_CONTRACT_ADDRESS,
+  TORITO_ABI,
+  USDT_TOKEN_ADDRESS,
+} from "@/config/toritoContract";
+import { formatUnits } from "viem";
+import { useEffect } from "react";
 
 export const useSupplyBalance = () => {
-  const [formattedShares, setFormattedShares] = useState<string>("0");
-  const [isLoading, setIsLoading] = useState(true);
+  const { address } = useAccount();
 
-  const refetch = useCallback(() => {
-    setIsLoading(true);
-    // Simulación de carga de balance
-    setTimeout(() => {
-      // Mock: mostrar un balance de ejemplo
-      setFormattedShares("0");
-      setIsLoading(false);
-    }, 500);
-  }, []);
+  const {
+    data,
+    isLoading,
+    refetch,
+  } = useReadContract({
+    address: TORITO_CONTRACT_ADDRESS,
+    abi: TORITO_ABI,
+    functionName: "supplies",
+    args: address && USDT_TOKEN_ADDRESS ? [address, USDT_TOKEN_ADDRESS] : undefined,
+    query: {
+      enabled: !!address && !!USDT_TOKEN_ADDRESS,
+    },
+  });
 
+  // La función supplies retorna [owner, scaledBalance, token, status]
+  const formattedShares = data
+    ? formatUnits((data as [string, bigint, string, number])[1], 6)
+    : "0";
+
+  // Auto-refetch cuando cambia la dirección
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    if (address) {
+      refetch();
+    }
+  }, [address, refetch]);
 
   return {
     formattedShares,
