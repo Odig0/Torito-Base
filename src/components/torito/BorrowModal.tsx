@@ -33,6 +33,8 @@ const BorrowModalInner = () => {
   const [loanOpen, setLoanOpen] = useState(false);
   const [resultOpen, setResultOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
 
   const [amountBs, setAmountBs] = useState<string>("");
   const [destType, setDestType] = useState<DestType>("bank");
@@ -73,7 +75,8 @@ const BorrowModalInner = () => {
   const fmt = (n: number) => new Intl.NumberFormat("es-BO", { maximumFractionDigits: 2 }).format(n);
 
   useEffect(() => {
-    if (isConfirmed && !loading) {
+    if (isConfirmed) {
+      setLoading(false);
       openResultAndReset();
       setAmountBs("");
       setBankName("");
@@ -81,7 +84,7 @@ const BorrowModalInner = () => {
       setQrFile(null);
       setQrText("");
     }
-  }, [isConfirmed, loading]);
+  }, [isConfirmed]);
 
   useEffect(() => {
     if (borrowError) {
@@ -91,17 +94,27 @@ const BorrowModalInner = () => {
 
   const openResultAndReset = () => {
     setLoanOpen(false);
-    setTimeout(() => setResultOpen(true), 150);
+    setPaymentProcessing(true);
+    setPaymentCompleted(false);
+    setTimeout(() => {
+      setResultOpen(true);
+      // Simular proceso de pago - después de 3 segundos marcar como completado
+      setTimeout(() => {
+        setPaymentProcessing(false);
+        setPaymentCompleted(true);
+      }, 3000);
+    }, 150);
   };
 
   const solicitarPrestamo = async () => {
-    if (!canSubmit || isBorrowing) return;
+    if (!canSubmit || isBorrowing || loading) return;
 
     try {
       setLoading(true);
       const amountFiat = parseFloat(amountBs);
 
       await borrow(usdtAddress, amountFiat.toString(), country.code);
+      // No resetear loading aquí, se hará en el useEffect cuando isConfirmed sea true
     } catch (e) {
       setLoading(false);
       console.error("Error al solicitar préstamo:", e);
@@ -339,31 +352,99 @@ const BorrowModalInner = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4">
             <div className="p-6 relative">
-              <button
-                onClick={() => setResultOpen(false)}
-                className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
-              >
-                ✕
-              </button>
+              {!paymentProcessing && (
+                <button
+                  onClick={() => {
+                    setResultOpen(false);
+                    setPaymentCompleted(false);
+                  }}
+                  className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+                >
+                  ✕
+                </button>
+              )}
 
               <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700">
-                    <BanknotesIcon className="h-6 w-6" />
-                  </div>
-                  <h3 className="text-xl font-bold m-0">Solicitud en proceso</h3>
-                </div>
+                {paymentProcessing ? (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100 text-yellow-700">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-700"></div>
+                      </div>
+                      <h3 className="text-xl font-bold m-0">Procesando pago...</h3>
+                    </div>
 
-                <p className="text-gray-600">
-                  Tu solicitud está en proceso. Te notificaremos a tu correo cuando el dinero haya sido enviado.
-                </p>
+                    <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
+                      <p className="text-gray-700 text-sm">
+                        Estamos enviando {amountBs} {country.symbol} a tu {destType === "bank" ? "cuenta bancaria" : "QR"}...
+                      </p>
+                      <div className="mt-3 space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span>Verificando datos</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span>Procesando transferencia</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                          <span>Confirmando con el banco...</span>
+                        </div>
+                      </div>
+                    </div>
 
-                <button
-                  onClick={() => setResultOpen(false)}
-                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg transition-all duration-200"
-                >
-                  Cerrar
-                </button>
+                    <p className="text-gray-500 text-sm text-center">
+                      Por favor espera, esto puede tomar unos segundos...
+                    </p>
+                  </>
+                ) : paymentCompleted ? (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-700">
+                        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold m-0 text-green-700">¡Pago exitoso!</h3>
+                    </div>
+
+                    <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
+                      <p className="text-gray-700 font-medium mb-2">
+                        Se enviaron {amountBs} {country.symbol}
+                      </p>
+                      <div className="space-y-1 text-sm text-gray-600">
+                        {destType === "bank" ? (
+                          <>
+                            <p>
+                              <strong>Banco:</strong> {bankName}
+                            </p>
+                            <p>
+                              <strong>Cuenta:</strong> {bankAccount}
+                            </p>
+                          </>
+                        ) : (
+                          <p>
+                            <strong>Destino:</strong> Cuenta QR
+                          </p>
+                        )}
+                        <p className="mt-2 text-xs text-gray-500">
+                          El dinero estará disponible en tu cuenta en los próximos minutos.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setResultOpen(false);
+                        setPaymentCompleted(false);
+                      }}
+                      className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg transition-all duration-200"
+                    >
+                      Cerrar
+                    </button>
+                  </>
+                ) : null}
               </div>
             </div>
           </div>
