@@ -122,9 +122,9 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-full w-full max-w-full flex-col px-1">
+    <div className="flex h-full w-full flex-col">
       {/* Header - Torito */}
-      <section className="mt-6 mb-6 flex w-full flex-col md:flex-row max-w-4xl mx-auto">
+      <section className="mt-6 mb-6 flex w-full flex-col md:flex-row max-w-4xl mx-auto px-6">
         <div className="flex w-full flex-row items-center justify-between gap-2 md:gap-0">
           <div className="cursor-pointer">
             <ToritoSvg />
@@ -137,9 +137,9 @@ export default function Page() {
       </section>
 
       {/* Contenido principal de Torito */}
-      <section className="flex items-center flex-col flex-grow pt-10 w-full min-h-screen bg-gray-50">
-        <div className="px-5 flex flex-col gap-6 items-center w-full">
-          <h1 className="text-center max-w-4xl leading-tight">
+      <section className="flex items-center flex-col flex-grow w-full min-h-screen bg-gray-50">
+        <div className="w-full max-w-4xl px-6 flex flex-col gap-6 items-center">
+          <h1 className="text-center w-full leading-tight pt-10">
             <span className="block text-5xl md:text-6xl font-extrabold text-gray-800">
               Deposita dólares,
               <br className="hidden md:block" /> préstate el 50%
@@ -166,8 +166,8 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="w-full max-w-4xl mt-8 px-5">
-          <div className="bg-white rounded-3xl shadow-xl p-8 md:p-10 border-2 border-gray-100">
+        <div className="w-full max-w-4xl mt-8 px-6">
+          <div className="bg-white rounded-3xl shadow-xl p-8 md:p-10 lg:p-12 border-2 border-gray-100">
             {alert && (
               <div
                 className={`mb-6 rounded-2xl border-2 px-5 py-4 flex items-center gap-3 ${

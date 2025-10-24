@@ -31,26 +31,26 @@ export const DepositBorrowCalculator: React.FC<DepositBorrowCalculatorProps> = (
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-bold text-gray-800 mb-3">💰 Deposita USDT</label>
-        <div className="relative">
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-2xl text-green-500">+</div>
+        <div className="relative group">
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-2xl text-green-500 group-focus-within:scale-110 transition-transform">+</div>
           <input
             type="text"
             value={usdt}
             onChange={e => setUsdt(e.target.value)}
             placeholder="0.00"
-            className={`w-full border-2 rounded-2xl px-12 py-4 text-lg font-semibold transition-colors ${
+            className={`w-full border-2 rounded-2xl px-12 py-4 text-lg font-semibold transition-all duration-200 shadow-sm ${
               validationError
-                ? "border-red-300 bg-red-50 focus:border-red-500"
-                : "border-gray-300 bg-white focus:border-purple-500"
+                ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-2 focus:ring-red-200"
+                : "border-gray-300 bg-white hover:border-green-400 hover:bg-green-50 focus:border-green-500 focus:bg-green-50 focus:ring-2 focus:ring-green-200 hover:shadow-md"
             } focus:outline-none`}
           />
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 font-bold">USDT</div>
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 font-bold group-focus-within:text-green-600 transition-colors">USDT</div>
         </div>
         {validationError && <div className="mt-2 text-sm text-red-600 font-medium">💡 {validationError}</div>}
       </div>
 
       {!validationError && (!usdt || parseFloat(usdt) === 0) && (
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4">
+        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 animate-pulse-slow">
           <div className="flex items-center gap-2">
             <span className="text-yellow-600">💡</span>
             <span className="text-sm font-bold text-gray-700">Ingresa un monto para ver cuánto podrás prestarte</span>
@@ -59,8 +59,8 @@ export const DepositBorrowCalculator: React.FC<DepositBorrowCalculatorProps> = (
       )}
 
       {usdt && parseFloat(usdt) > 0 && !validationError && (
-        <div className="space-y-3 pt-2">
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-4">
+        <div className="space-y-3 pt-2 animate-fade-in">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-4 hover:shadow-md transition-shadow">
             <div className="flex justify-between items-center">
               <span className="text-sm font-bold text-gray-700">💵 Recibirás en {country.code}</span>
               <span className="text-lg font-extrabold text-green-700">
@@ -69,7 +69,7 @@ export const DepositBorrowCalculator: React.FC<DepositBorrowCalculatorProps> = (
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl p-4">
+          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl p-4 hover:shadow-md transition-shadow">
             <div className="flex justify-between items-center">
               <span className="text-sm font-bold text-gray-700">🎯 Préstamo (50%)</span>
               <span className="text-lg font-extrabold text-blue-700">

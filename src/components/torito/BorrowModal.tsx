@@ -194,15 +194,15 @@ const BorrowModalInner = () => {
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">¿Cuánto quieres solicitar?</label>
-                <div className="relative">
+                <div className="relative group">
                   <input
                     inputMode="decimal"
                     value={amountBs}
                     onChange={e => onChangeAmount(e.target.value)}
                     placeholder="0.00"
-                    className="w-full pl-4 pr-20 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full pl-4 pr-20 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-blue-50 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
                   />
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-600 font-medium">
+                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-600 font-medium group-focus-within:text-blue-600 transition-colors">
                     {country.symbol}
                   </div>
                 </div>
@@ -212,7 +212,7 @@ const BorrowModalInner = () => {
                   ) : (
                     <>
                       Disponible:{" "}
-                      <strong>
+                      <strong className="text-blue-600">
                         {fmt(available)} {country.symbol}
                       </strong>
                     </>
@@ -229,15 +229,15 @@ const BorrowModalInner = () => {
                   <button
                     type="button"
                     onClick={() => setDestType("bank")}
-                    className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-left transition-colors ${
+                    className={`flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-left transition-all duration-200 transform ${
                       destType === "bank"
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 bg-white hover:border-gray-300"
+                        ? "border-blue-500 bg-blue-50 shadow-md scale-105"
+                        : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm"
                     }`}
                   >
-                    <BuildingLibraryIcon className="h-5 w-5" />
+                    <BuildingLibraryIcon className={`h-5 w-5 ${destType === "bank" ? "text-blue-600" : "text-gray-600"}`} />
                     <div className="leading-tight">
-                      <div className="font-medium text-sm">Cuenta bancaria</div>
+                      <div className={`font-medium text-sm ${destType === "bank" ? "text-blue-900" : "text-gray-900"}`}>Cuenta bancaria</div>
                       <div className="text-xs text-gray-500">Depósito a tu cuenta local</div>
                     </div>
                   </button>
@@ -245,15 +245,15 @@ const BorrowModalInner = () => {
                   <button
                     type="button"
                     onClick={() => setDestType("qr")}
-                    className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-left transition-colors ${
+                    className={`flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-left transition-all duration-200 transform ${
                       destType === "qr"
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 bg-white hover:border-gray-300"
+                        ? "border-blue-500 bg-blue-50 shadow-md scale-105"
+                        : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm"
                     }`}
                   >
-                    <QrCodeIcon className="h-5 w-5" />
+                    <QrCodeIcon className={`h-5 w-5 ${destType === "qr" ? "text-blue-600" : "text-gray-600"}`} />
                     <div className="leading-tight">
-                      <div className="font-medium text-sm">Importar QR</div>
+                      <div className={`font-medium text-sm ${destType === "qr" ? "text-blue-900" : "text-gray-900"}`}>Importar QR</div>
                       <div className="text-xs text-gray-500">Envía a una cuenta por QR</div>
                     </div>
                   </button>
@@ -264,7 +264,7 @@ const BorrowModalInner = () => {
                     <select
                       value={bankName}
                       onChange={e => setBankName(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-blue-50 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
                     >
                       <option value="">Selecciona tu banco</option>
                       {BOLIVIAN_BANKS.map(bank => (
@@ -277,12 +277,12 @@ const BorrowModalInner = () => {
                       value={bankAccount}
                       onChange={e => setBankAccount(e.target.value.replace(/[^\d\-]/g, ""))}
                       placeholder="Número de cuenta"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-blue-50 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
                     />
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    <label className="flex items-center justify-between rounded-xl border border-dashed border-gray-300 px-4 py-3 bg-gray-50 cursor-pointer hover:bg-gray-100">
+                    <label className="flex items-center justify-between rounded-xl border-2 border-dashed border-gray-300 px-4 py-3 bg-gray-50 cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md">
                       <span className="flex items-center gap-2 text-gray-700 text-sm">
                         <ArrowUpTrayIcon className="h-5 w-5" />
                         {qrFile ? (
@@ -304,7 +304,7 @@ const BorrowModalInner = () => {
                       onChange={e => setQrText(e.target.value)}
                       placeholder="Pega aquí los datos del QR (opcional)"
                       rows={3}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-blue-50 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 text-sm shadow-sm hover:shadow-md"
                     />
                     <p className="text-xs text-gray-500">
                       Puedes subir el QR o pegar sus datos. Con uno de los dos es suficiente.
