@@ -1,19 +1,35 @@
 "use client";
 
-import { useBalance, useAccount } from "wagmi";
+import { useReadContract, useAccount } from "wagmi";
+import { formatUnits } from "viem";
+import { USDT_TOKEN_ADDRESS } from "@/config/toritoContract";
+
+// ABI del ERC20 para balanceOf
+const ERC20_ABI = [
+  {
+    inputs: [{ name: "account", type: "address" }],
+    name: "balanceOf",
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
 
 export const useUSDTBalance = () => {
   const { address } = useAccount();
 
-  // Por ahora usamos el balance nativo de ETH
-  // TODO: Cambiar a token USDT cuando esté disponible
-  const { data, isLoading } = useBalance({
-    address: address,
+  const { data, isLoading } = useReadContract({
+    address: USDT_TOKEN_ADDRESS,
+    abi: ERC20_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !!address && !!USDT_TOKEN_ADDRESS,
+    },
   });
 
-  // ETH tiene 18 decimales, lo convertimos a número
-  // Mostraremos el balance en ETH como si fuera USDT por ahora
-  const balance = data ? parseFloat(data.formatted) : 0;
+  // USDC tiene 6 decimales (igual que USDT)
+  const balance = data ? parseFloat(formatUnits(data as bigint, 6)) : 0;
 
   return {
     balance,

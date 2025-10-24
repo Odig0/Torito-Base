@@ -142,10 +142,10 @@ export const TORITO_ABI = [
   },
 ] as const;
 
-// Dirección del token USDT en Base Sepolia
-// TODO: Reemplazar con la dirección real del token USDT cuando esté disponible
-// Por ahora usando una dirección placeholder - el balance se mostrará en ETH
-export const USDT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}`;
+// Dirección del token USDC de prueba en Base Sepolia
+// Este es un token ERC20 de prueba que puedes usar para testing
+// Puedes obtener tokens desde https://faucet.circle.com/
+export const USDT_TOKEN_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as `0x${string}`;
 
 // Helper para convertir string a bytes32 (para currency)
 export function stringToBytes32(text: string): `0x${string}` {

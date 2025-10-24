@@ -1,17 +1,10 @@
-import type { Metadata } from 'next';
-import { NEXT_PUBLIC_URL } from '../config';
-
 import './global.css';
 import '@coinbase/onchainkit/styles.css';
 import '@rainbow-me/rainbowkit/styles.css';
-import dynamic from 'next/dynamic';
-
-const OnchainProviders = dynamic(
-  () => import('src/components/OnchainProviders'),
-  {
-    ssr: false,
-  },
-);
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
+import { NEXT_PUBLIC_URL } from '../config';
+import OnchainProviders from 'src/components/OnchainProviders';
 
 export const viewport = {
   width: 'device-width',
@@ -19,21 +12,19 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Onchain App Template',
-  description: 'Built with OnchainKit',
+  title: 'Torito - Préstamos con Cripto',
+  description: 'Deposita USDC y obtén préstamos en tu moneda local',
   openGraph: {
-    title: 'Onchain App Template',
-    description: 'Built with OnchainKit',
+    title: 'Torito - Préstamos con Cripto',
+    description: 'Deposita USDC y obtén préstamos en tu moneda local',
     images: [`${NEXT_PUBLIC_URL}/vibes/vibes-19.png`],
   },
 };
 
-export default function RootLayout({
-  children,
-}: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="w-full">
+      <body className="flex items-center justify-center">
         <OnchainProviders>{children}</OnchainProviders>
       </body>
     </html>

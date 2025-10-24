@@ -113,11 +113,20 @@ const BorrowModalInner = () => {
       setLoading(true);
       const amountFiat = parseFloat(amountBs);
 
+      console.log("=== INICIANDO BORROW ===");
+      console.log("Token colateral (USDT):", usdtAddress);
+      console.log("Monto en Bs:", amountFiat);
+      console.log("Currency code:", country.code);
+      console.log("Saldo en Torito:", formattedShares);
+
       await borrow(usdtAddress, amountFiat.toString(), country.code);
+      console.log("✅ Borrow completado exitosamente");
       // No resetear loading aquí, se hará en el useEffect cuando isConfirmed sea true
     } catch (e) {
       setLoading(false);
-      console.error("Error al solicitar préstamo:", e);
+      console.error("❌ Error al solicitar préstamo:", e);
+      // Mostrar el error al usuario
+      alert(`Error al solicitar préstamo: ${e instanceof Error ? e.message : String(e)}`);
     }
   };
 

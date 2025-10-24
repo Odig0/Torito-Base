@@ -32,19 +32,27 @@ export const useBorrow = () => {
     setIsConfirmed(false);
 
     try {
-      // Convertir el monto fiat a wei (asumiendo 6 decimales para el cálculo)
-      const borrowAmount = parseUnits(borrowFiat, 6);
+      // El monto que se pide prestado en moneda local (Bs)
+      const borrowAmount = parseUnits(borrowFiat, 2);
       
       // Convertir la currency string a bytes32
       const currencyBytes32 = stringToBytes32(fiatCurrency);
+
+      console.log("Borrow params:", {
+        collateralToken,
+        borrowAmount: borrowAmount.toString(),
+        borrowFiat,
+        fiatCurrency,
+        currencyBytes32,
+      });
 
       const hash = await writeContractAsync({
         address: TORITO_CONTRACT_ADDRESS,
         abi: TORITO_ABI,
         functionName: "borrow",
         args: [
-          USDT_TOKEN_ADDRESS as `0x${string}`, // collateralToken (usamos USDT como colateral)
-          borrowAmount, // borrowAmount en formato wei
+          collateralToken as `0x${string}`, // collateralToken (el token que ya depositaste)
+          borrowAmount, // borrowAmount en formato wei (monto en moneda local con 2 decimales)
           currencyBytes32, // fiatCurrency como bytes32
         ],
       });
