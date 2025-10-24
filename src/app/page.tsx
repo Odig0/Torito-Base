@@ -10,6 +10,7 @@ import LoginButton from "../components/LoginButton";
 import SignupButton from "../components/SignupButton";
 import { DepositBorrowCalculator } from "../components/torito/AmountRow";
 import { BalancePill } from "../components/torito/BalancePill";
+import { BorrowModal } from "../components/torito/BorrowModal";
 import { CountrySelect } from "../components/torito/CountrySelect";
 import { useDeposit } from "../hooks/torito/useDeposit";
 import { useSupply } from "../hooks/torito/useSupply";
@@ -261,6 +262,12 @@ export default function Page() {
 
         <div className="h-10" />
       </section>
+
+      {/* Botón flotante de préstamo en la esquina inferior izquierda */}
+      <div className="fixed bottom-8 left-8 z-40">
+        <BorrowModal />
+      </div>
+
       <Footer />
     </div>
   );
