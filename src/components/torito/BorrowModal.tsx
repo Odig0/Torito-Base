@@ -57,7 +57,8 @@ const BorrowModalInner = () => {
   // Calcular el préstamo máximo basado en el saldo de Torito
   const usdtBalance = parseFloat(formattedShares || "0");
   const localBalance = usdtBalance * country.rate;
-  const maxLoanAmount = usdtBalance > 0 ? localBalance * 0.5 : 0;
+  // Para pruebas, permitir hasta 10000 Bs aunque no haya depósitos
+  const maxLoanAmount = usdtBalance > 0 ? localBalance * 0.5 : 10000;
 
   const available = maxLoanAmount;
   const amountNum = Number(amountBs || 0);
@@ -168,7 +169,13 @@ const BorrowModalInner = () => {
                     con tu saldo actual.
                   </>
                 ) : (
-                  "Deposita USDT en Torito para poder solicitar préstamos."
+                  <>
+                    Puedes solicitar hasta{" "}
+                    <strong>
+                      {fmt(maxLoanAmount)} {country.symbol}
+                    </strong>{" "}
+                    (modo de prueba).
+                  </>
                 )}
               </p>
 
