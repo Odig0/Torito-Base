@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Footer from "src/components/Footer";
-import { ONCHAINKIT_LINK } from "src/links";
-import OnchainkitSvg from "src/svg/OnchainkitSvg";
+import ToritoSvg from "src/svg/ToritoSvg";
 import { useAccount } from "wagmi";
 import LoginButton from "../components/LoginButton";
 import SignupButton from "../components/SignupButton";
@@ -124,12 +123,12 @@ export default function Page() {
 
   return (
     <div className="flex h-full w-full max-w-full flex-col px-1">
-      {/* Header - mantener el original */}
+      {/* Header - Torito */}
       <section className="mt-6 mb-6 flex w-full flex-col md:flex-row max-w-4xl mx-auto">
         <div className="flex w-full flex-row items-center justify-between gap-2 md:gap-0">
-          <a href={ONCHAINKIT_LINK} title="onchainkit" target="_blank" rel="noreferrer">
-            <OnchainkitSvg />
-          </a>
+          <div className="cursor-pointer">
+            <ToritoSvg />
+          </div>
           <div className="flex items-center gap-3">
             <SignupButton />
             {!address && <LoginButton />}
