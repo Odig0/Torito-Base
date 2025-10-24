@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 import Footer from "src/components/Footer";
 import ToritoSvg from "src/svg/ToritoSvg";
 import { useAccount } from "wagmi";
@@ -164,6 +165,14 @@ export default function Page() {
               skeleton={isLoadingBalance}
             />
           </div>
+
+          {/* Botón para ver deuda */}
+          <Link
+            href="/deuda"
+            className="mt-4 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 active:scale-95"
+          >
+            📊 Ver y pagar mi deuda
+          </Link>
         </div>
 
         <div className="w-full max-w-4xl mt-8 px-6">
