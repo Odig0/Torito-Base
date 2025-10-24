@@ -1,55 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import {
-  ArrowLeftIcon,
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
-  ClockIcon,
-  BanknotesIcon,
-  CreditCardIcon,
-  DocumentTextIcon,
-  PhotoIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Footer from "src/components/Footer";
 import ToritoSvg from "src/svg/ToritoSvg";
 import { useAccount } from "wagmi";
 import LoginButton from "../../components/LoginButton";
 import SignupButton from "../../components/SignupButton";
+import { BalancePill } from "../../components/torito/BalancePill";
 import { fmt } from "../../utils/number";
 
 export default function DeudaPage() {
   const { address } = useAccount();
   const [alert, setAlert] = useState<null | { type: "success" | "error"; text: string }>(null);
-  const [showQRUpload, setShowQRUpload] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [paymentAmount, setPaymentAmount] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Mock data - reemplazar con hooks reales
-  const totalDebt = 500; // USDT
-  const debtInLocal = 6000; // Bs
-  const totalPaid = 200; // USDT
-  const remainingDebt = totalDebt - totalPaid;
+  const totalDebtUSDT = 500; // USDT (préstamo original)
+  const debtInLocal = 6000; // Bs - Esta es la deuda a pagar
+  const exchangeRate = 12; // 1 USDT = 12 Bs
   const nextPaymentDate = "15 Nov 2025";
   const interestRate = 5; // %
-  const loanHistory = [
-    { date: "20 Oct 2025", amount: 100, type: "Pago", status: "Completado" },
-    { date: "15 Oct 2025", amount: 100, type: "Pago", status: "Completado" },
-    { date: "01 Oct 2025", amount: 500, type: "Préstamo", status: "Aprobado" },
-  ];
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-    }
-  };
-
-  const handleQRSubmit = async () => {
-    if (!selectedFile) {
+  const handlePayment = async () => {
+    if (!paymentAmount || parseFloat(paymentAmount) <= 0) {
       setAlert({
         type: "error",
-        text: "Por favor selecciona una imagen del comprobante QR",
+        text: "Ingresa un monto válido para pagar",
+      });
+      return;
+    }
+
+    if (parseFloat(paymentAmount) > debtInLocal) {
+      setAlert({
+        type: "error",
+        text: "El monto no puede ser mayor a tu deuda total",
       });
       return;
     }
@@ -57,22 +44,21 @@ export default function DeudaPage() {
     setIsProcessing(true);
     setAlert(null);
 
-    // Simular procesamiento de QR
+    // Simular procesamiento
     setTimeout(() => {
       setIsProcessing(false);
-      setShowQRUpload(false);
-      setSelectedFile(null);
       setAlert({
         type: "success",
-        text: "¡Comprobante enviado! Tu pago será verificado en 24-48 horas.",
+        text: `¡Pago de ${paymentAmount} Bs procesado exitosamente!`,
       });
+      setPaymentAmount("");
     }, 2000);
   };
 
   return (
     <div className="flex h-full w-full flex-col">
       {/* Header - Torito */}
-      <section className="mt-6 mb-6 flex w-full flex-col md:flex-row max-w-7xl mx-auto px-6">
+      <section className="mt-6 mb-6 flex w-full flex-col md:flex-row max-w-4xl mx-auto px-6">
         <div className="flex w-full flex-row items-center justify-between gap-2 md:gap-0">
           <div className="cursor-pointer">
             <ToritoSvg />
@@ -84,11 +70,11 @@ export default function DeudaPage() {
         </div>
       </section>
 
-      {/* Dashboard */}
-      <section className="flex items-center flex-col flex-grow w-full min-h-screen bg-gray-50 pb-20">
-        <div className="w-full max-w-7xl px-6">
+      {/* Contenido principal */}
+      <section className="flex items-center flex-col flex-grow w-full min-h-screen bg-gray-50">
+        <div className="w-full max-w-4xl px-6 flex flex-col gap-6 items-center">
           {/* Botón volver */}
-          <div className="flex justify-start mb-6">
+          <div className="w-full flex justify-start pt-10">
             <Link
               href="/"
               className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors font-medium"
@@ -98,228 +84,154 @@ export default function DeudaPage() {
             </Link>
           </div>
 
-          {/* Título */}
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-2">
-            Dashboard de Préstamos
+          <h1 className="text-center w-full leading-tight">
+            <span className="block text-5xl md:text-6xl font-extrabold text-gray-800">
+              Gestiona tu deuda
+            </span>
+            <span className="block text-xl md:text-2xl text-gray-600 mt-4">
+              Visualiza y paga tu préstamo en cualquier momento
+            </span>
           </h1>
-          <p className="text-gray-600 mb-8">Gestiona y paga tu deuda de forma sencilla</p>
 
-          {/* Alertas */}
-          {alert && (
-            <div
-              className={`mb-6 rounded-2xl border-2 px-5 py-4 flex items-center gap-3 ${
-                alert.type === "success"
-                  ? "bg-green-50 border-green-200 text-green-800"
-                  : "bg-red-50 border-red-200 text-red-800"
-              }`}
-            >
-              {alert.type === "success" ? (
-                <CheckCircleIcon className="h-6 w-6 flex-shrink-0" />
-              ) : (
-                <ExclamationTriangleIcon className="h-6 w-6 flex-shrink-0" />
-              )}
-              <span className="text-sm font-medium">{alert.text}</span>
-              <button
-                type="button"
-                onClick={() => setAlert(null)}
-                className="ml-auto text-xl hover:opacity-70 transition-opacity"
-              >
-                ✕
-              </button>
-            </div>
-          )}
-
-          {/* Cards principales */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {/* Card 1: Deuda Total */}
-            <div className="bg-white rounded-3xl shadow-lg p-6 border-2 border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-red-100 rounded-full">
-                  <BanknotesIcon className="h-6 w-6 text-red-600" />
-                </div>
-                <h3 className="text-sm font-bold text-gray-600">Deuda Restante</h3>
-              </div>
-              <div className="text-3xl font-extrabold text-red-600 mb-1">{fmt(remainingDebt)} USDT</div>
-              <div className="text-sm text-gray-500">≈ {fmt(remainingDebt * 12)} Bs</div>
-            </div>
-
-            {/* Card 2: Total Pagado */}
-            <div className="bg-white rounded-3xl shadow-lg p-6 border-2 border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-green-100 rounded-full">
-                  <CheckCircleIcon className="h-6 w-6 text-green-600" />
-                </div>
-                <h3 className="text-sm font-bold text-gray-600">Total Pagado</h3>
-              </div>
-              <div className="text-3xl font-extrabold text-green-600 mb-1">{fmt(totalPaid)} USDT</div>
-              <div className="text-sm text-gray-500">De {fmt(totalDebt)} USDT</div>
-            </div>
-
-            {/* Card 3: Próximo Pago */}
-            <div className="bg-white rounded-3xl shadow-lg p-6 border-2 border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-blue-100 rounded-full">
-                  <ClockIcon className="h-6 w-6 text-blue-600" />
-                </div>
-                <h3 className="text-sm font-bold text-gray-600">Próximo Pago</h3>
-              </div>
-              <div className="text-2xl font-extrabold text-blue-600 mb-1">{nextPaymentDate}</div>
-              <div className="text-sm text-gray-500">Fecha límite</div>
-            </div>
-
-            {/* Card 4: Tasa de Interés */}
-            <div className="bg-white rounded-3xl shadow-lg p-6 border-2 border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-purple-100 rounded-full">
-                  <DocumentTextIcon className="h-6 w-6 text-purple-600" />
-                </div>
-                <h3 className="text-sm font-bold text-gray-600">Tasa de Interés</h3>
-              </div>
-              <div className="text-3xl font-extrabold text-purple-600 mb-1">{interestRate}%</div>
-              <div className="text-sm text-gray-500">Anual</div>
-            </div>
+          <div className="flex gap-4 flex-wrap justify-center">
+            <BalancePill
+              label={<>💰 Préstamo Original:</>}
+              value={`${fmt(totalDebtUSDT)} USDT`}
+              skeleton={false}
+            />
+            <BalancePill
+              label={<>💵 Deuda a Pagar:</>}
+              value={`${fmt(debtInLocal)} Bs`}
+              skeleton={false}
+            />
           </div>
+        </div>
 
-          {/* Sección de Pago con QR */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {/* Card: Pagar con QR */}
-            <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-100">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-indigo-100 rounded-full">
-                  <PhotoIcon className="h-8 w-8 text-indigo-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-800">Pagar con QR</h2>
-              </div>
-              <p className="text-gray-600 mb-6">
-                Realiza tu pago a través de transferencia bancaria y sube el comprobante QR para verificación.
-              </p>
-
-              {!showQRUpload ? (
+        <div className="w-full max-w-4xl mt-8 px-6">
+          <div className="bg-white rounded-3xl shadow-xl p-8 md:p-10 lg:p-12 border-2 border-gray-100">
+            {alert && (
+              <div
+                className={`mb-6 rounded-2xl border-2 px-5 py-4 flex items-center gap-3 ${
+                  alert.type === "success"
+                    ? "bg-green-50 border-green-200 text-green-800"
+                    : "bg-red-50 border-red-200 text-red-800"
+                }`}
+              >
+                {alert.type === "success" ? (
+                  <CheckCircleIcon className="h-6 w-6 flex-shrink-0" />
+                ) : (
+                  <ExclamationTriangleIcon className="h-6 w-6 flex-shrink-0" />
+                )}
+                <span className="text-sm font-medium">{alert.text}</span>
                 <button
                   type="button"
-                  onClick={() => setShowQRUpload(true)}
-                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                  onClick={() => setAlert(null)}
+                  className="ml-auto text-xl hover:opacity-70 transition-opacity"
                 >
-                  📸 Subir comprobante QR
+                  ✕
                 </button>
-              ) : (
-                <div className="space-y-4">
-                  <div className="border-2 border-dashed border-gray-300 rounded-2xl p-6 hover:border-indigo-400 transition-colors">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="hidden"
-                      id="qr-upload"
-                    />
-                    <label
-                      htmlFor="qr-upload"
-                      className="cursor-pointer flex flex-col items-center justify-center"
-                    >
-                      <PhotoIcon className="h-16 w-16 text-gray-400 mb-3" />
-                      <span className="text-sm font-medium text-gray-600">
-                        {selectedFile ? selectedFile.name : "Haz clic para seleccionar imagen"}
-                      </span>
-                    </label>
+              </div>
+            )}
+
+            {/* Resumen de deuda */}
+            <div className="mb-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl border-2 border-purple-200">
+              <h2 className="text-2xl font-bold text-purple-900 mb-4">📊 Resumen de tu préstamo</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white rounded-xl p-4 shadow-sm">
+                  <div className="text-sm text-gray-600 mb-1">Préstamo original (USDT)</div>
+                  <div className="text-2xl font-bold text-purple-700">{fmt(totalDebtUSDT)} USDT</div>
+                  <div className="text-sm text-gray-500 mt-1">1 USDT = {exchangeRate} Bs</div>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm">
+                  <div className="text-sm text-gray-600 mb-1">Deuda a pagar (Bs)</div>
+                  <div className="text-2xl font-bold text-red-700">{fmt(debtInLocal)} Bs</div>
+                  <div className="text-sm text-gray-500 mt-1">En moneda local</div>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm">
+                  <div className="text-sm text-gray-600 mb-1">Tasa de interés</div>
+                  <div className="text-2xl font-bold text-purple-700">{interestRate}%</div>
+                  <div className="text-sm text-gray-500 mt-1">Anual</div>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm">
+                  <div className="text-sm text-gray-600 mb-1">Próximo pago</div>
+                  <div className="text-lg font-bold text-purple-700">{nextPaymentDate}</div>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm">
+                  <div className="text-sm text-gray-600 mb-1">Estado</div>
+                  <div className="text-lg font-bold text-green-600">✅ Al día</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Formulario de pago */}
+            <div className="mb-8">
+              <label className="block text-sm font-bold text-gray-800 mb-3">💳 Pagar deuda en Bs</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={paymentAmount}
+                  onChange={e => setPaymentAmount(e.target.value)}
+                  className="w-full px-6 py-4 text-2xl font-bold border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all hover:border-green-300 hover:bg-green-50"
+                />
+                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xl font-bold text-gray-400">
+                  Bs
+                </span>
+              </div>
+              <div className="flex justify-between mt-3 text-sm">
+                <button
+                  type="button"
+                  onClick={() => setPaymentAmount((debtInLocal * 0.5).toFixed(2))}
+                  className="text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  50% ({fmt(debtInLocal * 0.5)} Bs)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentAmount(debtInLocal.toFixed(2))}
+                  className="text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  Pagar todo ({fmt(debtInLocal)} Bs)
+                </button>
+              </div>
+            </div>
+
+            {/* Botón de pago */}
+            <div className="flex flex-col items-center space-y-4">
+              <button
+                type="button"
+                onClick={handlePayment}
+                disabled={!paymentAmount || parseFloat(paymentAmount) <= 0 || isProcessing}
+                className={`w-full max-w-md rounded-2xl px-8 py-4 font-bold text-lg shadow-lg transition-all duration-200 transform ${
+                  paymentAmount && parseFloat(paymentAmount) > 0 && !isProcessing
+                    ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-green-200 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+                    : "bg-gray-200 text-gray-500 cursor-not-allowed shadow-gray-100"
+                }`}
+              >
+                {isProcessing ? (
+                  <div className="flex items-center justify-center">
+                    <span className="loading loading-spinner loading-md mr-3" />
+                    Procesando pago...
                   </div>
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowQRUpload(false);
-                        setSelectedFile(null);
-                      }}
-                      className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded-2xl transition-colors"
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleQRSubmit}
-                      disabled={!selectedFile || isProcessing}
-                      className={`flex-1 font-bold py-3 rounded-2xl transition-all ${
-                        selectedFile && !isProcessing
-                          ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg"
-                          : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                      }`}
-                    >
-                      {isProcessing ? "Enviando..." : "Enviar"}
-                    </button>
+                ) : (
+                  "💰 Pagar deuda"
+                )}
+              </button>
+
+              {paymentAmount && parseFloat(paymentAmount) > 0 && !isProcessing && (
+                <div className="text-center space-y-1">
+                  <div className="text-sm text-gray-600">⚡ Pago rápido y seguro en Bs</div>
+                  <div className="text-xs text-gray-500">
+                    Pagarás {paymentAmount} Bs de tu deuda total
                   </div>
                 </div>
               )}
-            </div>
-
-            {/* Card: Información de pago */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl shadow-xl p-8 border-2 border-blue-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-blue-100 rounded-full">
-                  <CreditCardIcon className="h-8 w-8 text-blue-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-blue-900">Datos para transferencia</h2>
-              </div>
-              <div className="space-y-4">
-                <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <div className="text-sm text-gray-600 mb-1">Banco</div>
-                  <div className="text-lg font-bold text-gray-800">Banco Nacional de Bolivia</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <div className="text-sm text-gray-600 mb-1">Número de cuenta</div>
-                  <div className="text-lg font-bold text-gray-800">1234-5678-9012-3456</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <div className="text-sm text-gray-600 mb-1">Beneficiario</div>
-                  <div className="text-lg font-bold text-gray-800">Torito Finance</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <div className="text-sm text-gray-600 mb-1">Concepto</div>
-                  <div className="text-lg font-bold text-gray-800">Pago préstamo #{address?.slice(0, 8)}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Historial de transacciones */}
-          <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">📜 Historial de transacciones</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b-2 border-gray-200">
-                    <th className="text-left py-4 px-4 font-bold text-gray-600">Fecha</th>
-                    <th className="text-left py-4 px-4 font-bold text-gray-600">Tipo</th>
-                    <th className="text-left py-4 px-4 font-bold text-gray-600">Monto</th>
-                    <th className="text-left py-4 px-4 font-bold text-gray-600">Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loanHistory.map((item, index) => (
-                    <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                      <td className="py-4 px-4 text-gray-700">{item.date}</td>
-                      <td className="py-4 px-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-medium ${
-                            item.type === "Pago"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-blue-100 text-blue-700"
-                          }`}
-                        >
-                          {item.type}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 font-bold text-gray-800">{fmt(item.amount)} USDT</td>
-                      <td className="py-4 px-4">
-                        <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
-                          {item.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
+
+        <div className="h-10" />
       </section>
 
       <Footer />
