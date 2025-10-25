@@ -131,9 +131,24 @@ torito.updateCurrencyCollateralizationRatio(bytes32("USD"), newRatio);
 torito.updateCurrencyLiquidationThreshold(bytes32("USD"), newThreshold); 
 ## 🔧 Development
 
+### Local Development Setup Frontend 
+
+To get started with local development:
+
+```bash
+# Install dependencies
+bun install
+
+# Start development server (runs on port 3000)
+bun run dev
+```
+
+The application will be available at http://localhost:3000
+
+
 ### Prerequisites
-- [Bun](https://bun.sh/) - Fast all-in-one JavaScript runtime & toolkit
-- Node.js 18+ (recommended)
+- [Foundry](https://getfoundry.sh/) - Ethereum development toolkit
+- Node.js (for testing)
 
 ### Setup
 
@@ -142,25 +157,25 @@ git clone <repository-url>
 cd torito
 
 # Install dependencies
-bun install
+forge install
 
-# Start development server
-bun run dev
+# Build contracts
+forge build
 
 # Run tests
-bun test
+forge test
 
 
 ### Testing
 
 # Run all tests
-bun test
+forge test
 
 # Run specific test
-bun test supply
+forge test --match-test test_Supply
 
-# Run tests with watch mode
-bun test --watch
+# Run with verbose output
+forge test -vvv
 
 
 ### Deployment
@@ -237,4 +252,4 @@ This project is licensed under the MIT License.
 5. Ensure all tests pass
 6. Submit a pull request
 
-For detailed development setup and commands, see [DEVELOPMENT.md](./DEVE LOPMENT.md).
+For detailed development setup and commands, see [DEVELOPMENT.md](./DEVELOPMENT.md).
