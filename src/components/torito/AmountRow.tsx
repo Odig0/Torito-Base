@@ -30,7 +30,7 @@ export const DepositBorrowCalculator: React.FC<DepositBorrowCalculatorProps> = (
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-bold text-gray-800 mb-3">💰 Deposita USDT</label>
+        <label className="block text-sm font-bold text-gray-800 mb-3">💰 Deposita USDC</label>
         <div className="relative group">
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-2xl text-green-500 group-focus-within:scale-110 transition-transform">+</div>
           <input

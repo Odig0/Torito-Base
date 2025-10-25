@@ -18,13 +18,13 @@ Abre el archivo `src/config/toritoContract.ts` y actualiza:
 // Reemplaza '0x...' con la dirección real del contrato
 export const TORITO_CONTRACT_ADDRESS = '0xTU_DIRECCION_AQUI' as `0x${string}`;
 
-// Reemplaza con la dirección del token USDT en Base Sepolia
-export const USDT_TOKEN_ADDRESS = '0xTU_DIRECCION_USDT_AQUI' as `0x${string}`;
+// Reemplaza con la dirección del token USDC en Base Sepolia
+export const USDC_TOKEN_ADDRESS = '0xTU_DIRECCION_USDC_AQUI' as `0x${string}`;
 ```
 
-### 3. Encontrar el Token USDT en Base Sepolia
+### 3. Encontrar el Token USDC en Base Sepolia
 
-Busca la dirección del token USDT de prueba en Base Sepolia:
+Busca la dirección del token USDC de prueba en Base Sepolia:
 - Puedes usar tokens de prueba de Aave o Compound en Base Sepolia
 - O buscar en la documentación oficial de Base
 
@@ -42,7 +42,7 @@ Asegúrate de que tu wallet esté conectada a esta red.
    - Usa `readContract` con la función `supplies`
 
 2. **`src/hooks/torito/useSupply.ts`**
-   - Maneja aprobación del token USDT
+   - Maneja aprobación del token USDC
    - Ejecuta el depósito en el contrato
 
 3. **`src/hooks/torito/useBorrow.ts`**
@@ -64,18 +64,18 @@ El contrato Torito incluye:
 - `supplies(address, address)` - Ver balance depositado
 - `borrows(address, bytes32)` - Ver información de préstamo
 - `convertCurrencyToUSD(bytes32, uint256)` - Convertir moneda a USD
-- `convertUSDToCurrency(bytes32, uint256)` - Convertir USD a moneda
+- `convertUSDCoCurrency(bytes32, uint256)` - Convertir USD a moneda
 - `dynamicBorrowRate(bytes32)` - Obtener tasa de interés dinámica
 
 ### Funciones de Escritura (transacciones):
-- `supply(address, uint256)` - Depositar USDT
+- `supply(address, uint256)` - Depositar USDC
 - `borrow(address, uint256, bytes32)` - Solicitar préstamo
 - `repayLoan(bytes32, uint256)` - Pagar préstamo
 
 ## Próximos Pasos
 
 1. [ ] Completar direcciones de contratos en `toritoContract.ts`
-2. [ ] Probar la aprobación de USDT
+2. [ ] Probar la aprobación de USDC
 3. [ ] Probar el depósito (supply)
 4. [ ] Probar la solicitud de préstamo (borrow)
 5. [ ] Implementar la función de pago de préstamo
@@ -83,7 +83,7 @@ El contrato Torito incluye:
 
 ## Notas Técnicas
 
-- **USDT decimales**: 6 (no 18 como ETH)
+- **USDC decimales**: 6 (no 18 como ETH)
 - **Currency encoding**: Se usa `stringToBytes32()` para convertir nombres de monedas
 - **Wagmi hooks**: `useReadContract`, `useWriteContract`, `useWaitForTransactionReceipt`
 - **Chain**: Base Sepolia (testnet)
@@ -92,8 +92,8 @@ El contrato Torito incluye:
 
 Para probar:
 1. Conecta tu wallet a Base Sepolia
-2. Obtén tokens USDT de prueba
-3. Aprueba el gasto de USDT al contrato Torito
+2. Obtén tokens USDC de prueba
+3. Aprueba el gasto de USDC al contrato Torito
 4. Realiza un depósito
 5. Verifica que el balance se actualice
 
