@@ -11,18 +11,18 @@ import { getUSDCAddress } from "../../utils/networkConfig";
 type DestType = "bank" | "qr";
 
 const BOLIVIAN_BANKS = [
-  "Banco Mercantil Santa Cruz",
-  "Banco Ganadero",
-  "Banco Nacional de Bolivia",
-  "Banco Bisa",
-  "Banco Sol",
-  "Banco Unión",
-  "Banco Económico",
-  "Banco Fassil",
-  "Banco Fortaleza",
-  "Banco FIE",
-  "Banco Pyme",
-  "Banco de Crédito de Bolivia",
+  "Mercantile Bank Santa Cruz",
+  "Cattle Bank",
+  "National Bank of Bolivia",
+  "Bisa Bank",
+  "Sol Bank",
+  "Union Bank",
+  "Economic Bank",
+  "Fassil Bank",
+  "Fortress Bank",
+  "FIE Bank",
+  "SME Bank",
+  "Credit Bank of Bolivia",
 ] as const;
 
 export const BorrowModal = () => {
@@ -124,7 +124,7 @@ const BorrowModalInner = () => {
       // No resetear loading aquí, se hará en el useEffect cuando isConfirmed sea true
     } catch (e) {
       setLoading(false);
-      console.error("❌ Error al solicitar préstamo:", e);
+      console.error("❌ Error requesting loan:", e);
       // Mostrar el error al usuario
       alert(`Error al solicitar préstamo: ${e instanceof Error ? e.message : String(e)}`);
     }
@@ -285,7 +285,7 @@ const BorrowModalInner = () => {
                     <input
                       value={bankAccount}
                       onChange={e => setBankAccount(e.target.value.replace(/[^\d\-]/g, ""))}
-                      placeholder="Número de cuenta"
+                      placeholder="Account number"
                       className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-blue-50 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
                     />
                   </div>
@@ -311,7 +311,7 @@ const BorrowModalInner = () => {
                     <textarea
                       value={qrText}
                       onChange={e => setQrText(e.target.value)}
-                      placeholder="Pega aquí los datos del QR (opcional)"
+                      placeholder="Paste QR data here (optional)"
                       rows={3}
                       className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-blue-50 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 text-sm shadow-sm hover:shadow-md"
                     />

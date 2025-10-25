@@ -28,7 +28,7 @@ export default function DeudaPage() {
     if (!paymentAmount || parseFloat(paymentAmount) <= 0) {
       setAlert({
         type: "error",
-        text: "Ingresa un monto válido para pagar",
+        text: "Enter a valid amount to pay",
       });
       return;
     }
@@ -36,7 +36,7 @@ export default function DeudaPage() {
     if (parseFloat(paymentAmount) > debtInLocal) {
       setAlert({
         type: "error",
-        text: "El monto no puede ser mayor a tu deuda total",
+        text: "Amount cannot be greater than your total debt",
       });
       return;
     }
@@ -49,7 +49,7 @@ export default function DeudaPage() {
       setIsProcessing(false);
       setAlert({
         type: "success",
-        text: `¡Pago de ${paymentAmount} Bs procesado exitosamente!`,
+        text: `Payment of ${paymentAmount} Bs processed successfully!`,
       });
       setPaymentAmount("");
     }, 2000);
@@ -80,16 +80,16 @@ export default function DeudaPage() {
               className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors font-medium"
             >
               <ArrowLeftIcon className="h-5 w-5" />
-              Volver al inicio
+              Back to home
             </Link>
           </div>
 
           <h1 className="text-center w-full leading-tight">
             <span className="block text-5xl md:text-6xl font-extrabold text-gray-800">
-              Gestiona tu deuda
+              Manage your loan
             </span>
             <span className="block text-xl md:text-2xl text-gray-600 mt-4">
-              Visualiza y paga tu préstamo en cualquier momento
+              View and pay your loan at any time
             </span>
           </h1>
 
