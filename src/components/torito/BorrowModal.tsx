@@ -157,7 +157,7 @@ const BorrowModalInner = () => {
         className="group relative bg-blue-500 hover:bg-blue-600 active:bg-blue-800 text-white px-6 py-2 rounded-2xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 min-w-[140px] justify-center"
       >
         <BanknotesIcon className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
-        <span className="text-base">Prestarme</span>
+        <span className="text-base">Borrow</span>
       </button>
 
       {/* Modal de préstamo */}
@@ -176,33 +176,33 @@ const BorrowModalInner = () => {
                 <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-700">
                   <BanknotesIcon className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-bold m-0">Préstamo</h3>
+                <h3 className="text-xl font-bold m-0">Loan</h3>
               </div>
 
               <p className="text-gray-600 mb-4">
                 {isLoadingBalance ? (
-                  "Cargando tu saldo..."
+                  "Loading your balance..."
                 ) : usdtBalance > 0 ? (
                   <>
-                    Puedes prestarte hasta{" "}
+                    You can borrow up to{" "}
                     <strong>
                       {fmt(maxLoanAmount)} {country.symbol}
                     </strong>{" "}
-                    con tu saldo actual.
+                    with your current balance.
                   </>
                 ) : (
                   <>
-                    Puedes solicitar hasta{" "}
+                    You can request up to{" "}
                     <strong>
                       {fmt(maxLoanAmount)} {country.symbol}
                     </strong>{" "}
-                    (modo de prueba).
+                    (test mode).
                   </>
                 )}
               </p>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">¿Cuánto quieres solicitar?</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">How much do you want to borrow?</label>
                 <div className="relative group">
                   <input
                     inputMode="decimal"
@@ -217,10 +217,10 @@ const BorrowModalInner = () => {
                 </div>
                 <div className="mt-1 text-sm text-gray-500">
                   {isLoadingBalance ? (
-                    "Cargando..."
+                    "Loading..."
                   ) : (
                     <>
-                      Disponible:{" "}
+                      Available:{" "}
                       <strong className="text-blue-600">
                         {fmt(available)} {country.symbol}
                       </strong>
@@ -231,7 +231,7 @@ const BorrowModalInner = () => {
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ¿Dónde quieres recibir el dinero?
+                  Where do you want to receive the money?
                 </label>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
@@ -246,8 +246,8 @@ const BorrowModalInner = () => {
                   >
                     <BuildingLibraryIcon className={`h-5 w-5 ${destType === "bank" ? "text-blue-600" : "text-gray-600"}`} />
                     <div className="leading-tight">
-                      <div className={`font-medium text-sm ${destType === "bank" ? "text-blue-900" : "text-gray-900"}`}>Cuenta bancaria</div>
-                      <div className="text-xs text-gray-500">Depósito a tu cuenta local</div>
+                      <div className={`font-medium text-sm ${destType === "bank" ? "text-blue-900" : "text-gray-900"}`}>Bank account</div>
+                      <div className="text-xs text-gray-500">Deposit to your local account</div>
                     </div>
                   </button>
 
@@ -262,8 +262,8 @@ const BorrowModalInner = () => {
                   >
                     <QrCodeIcon className={`h-5 w-5 ${destType === "qr" ? "text-blue-600" : "text-gray-600"}`} />
                     <div className="leading-tight">
-                      <div className={`font-medium text-sm ${destType === "qr" ? "text-blue-900" : "text-gray-900"}`}>Importar QR</div>
-                      <div className="text-xs text-gray-500">Envía a una cuenta por QR</div>
+                      <div className={`font-medium text-sm ${destType === "qr" ? "text-blue-900" : "text-gray-900"}`}>Import QR</div>
+                      <div className="text-xs text-gray-500">Send to an account by QR</div>
                     </div>
                   </button>
                 </div>
@@ -275,7 +275,7 @@ const BorrowModalInner = () => {
                       onChange={e => setBankName(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-blue-50 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
                     >
-                      <option value="">Selecciona tu banco</option>
+                      <option value="">Select your bank</option>
                       {BOLIVIAN_BANKS.map(bank => (
                         <option key={bank} value={bank}>
                           {bank}
@@ -297,7 +297,7 @@ const BorrowModalInner = () => {
                         {qrFile ? (
                           <span className="truncate max-w-[220px]">{qrFile.name}</span>
                         ) : (
-                          <span>Subir imagen del QR (PNG/JPG)</span>
+                          <span>Upload QR image (PNG/JPG)</span>
                         )}
                       </span>
                       <input
@@ -316,7 +316,7 @@ const BorrowModalInner = () => {
                       className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-blue-50 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 text-sm shadow-sm hover:shadow-md"
                     />
                     <p className="text-xs text-gray-500">
-                      Puedes subir el QR o pegar sus datos. Con uno de los dos es suficiente.
+                      You can upload the QR or paste its data. Either one is sufficient.
                     </p>
                   </div>
                 )}
@@ -335,18 +335,18 @@ const BorrowModalInner = () => {
                   {loading || isBorrowing ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Procesando...</span>
+                      <span>Processing...</span>
                     </>
                   ) : (
                     <>
                       <BanknotesIcon className="h-5 w-5" />
-                      <span>Solicitar préstamo</span>
+                      <span>Request loan</span>
                     </>
                   )}
                 </button>
                 {!canSubmit && (
                   <p className="mt-2 text-xs text-gray-500 text-center">
-                    Ingresa un monto válido y el destino para continuar.
+                    Enter a valid amount and destination to continue.
                   </p>
                 )}
                 {borrowError && <p className="mt-2 text-xs text-red-500 text-center">Error: {borrowError.message}</p>}
@@ -380,7 +380,7 @@ const BorrowModalInner = () => {
                       <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100 text-yellow-700">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-700"></div>
                       </div>
-                      <h3 className="text-xl font-bold m-0">Procesando pago...</h3>
+                      <h3 className="text-xl font-bold m-0">Processing payment...</h3>
                     </div>
 
                     <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
@@ -390,21 +390,21 @@ const BorrowModalInner = () => {
                       <div className="mt-3 space-y-2">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                          <span>Verificando datos</span>
+                          <span>Verifying data</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                          <span>Procesando transferencia</span>
+                          <span>Processing transfer</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                          <span>Confirmando con el banco...</span>
+                          <span>Confirming with bank...</span>
                         </div>
                       </div>
                     </div>
 
                     <p className="text-gray-500 text-sm text-center">
-                      Por favor espera, esto puede tomar unos segundos...
+                      Please wait, this may take a few seconds...
                     </p>
                   </>
                 ) : paymentCompleted ? (
@@ -415,12 +415,12 @@ const BorrowModalInner = () => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <h3 className="text-xl font-bold m-0 text-green-700">¡Pago exitoso!</h3>
+                      <h3 className="text-xl font-bold m-0 text-green-700">Payment successful!</h3>
                     </div>
 
                     <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
                       <p className="text-gray-700 font-medium mb-2">
-                        Se enviaron {amountBs} {country.symbol}
+                        {amountBs} {country.symbol} have been sent
                       </p>
                       <div className="space-y-1 text-sm text-gray-600">
                         {destType === "bank" ? (
@@ -438,7 +438,7 @@ const BorrowModalInner = () => {
                           </p>
                         )}
                         <p className="mt-2 text-xs text-gray-500">
-                          El dinero estará disponible en tu cuenta en los próximos minutos.
+                          The money will be available in your account in the next few minutes.
                         </p>
                       </div>
                     </div>
@@ -450,7 +450,7 @@ const BorrowModalInner = () => {
                       }}
                       className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg transition-all duration-200"
                     >
-                      Cerrar
+                                          Close
                     </button>
                   </>
                 ) : null}
