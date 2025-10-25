@@ -1,71 +1,240 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/coinbase/onchainkit/main/site/docs/public/logo/v0-27.png">
-    <img alt="OnchainKit logo vibes" src="https://raw.githubusercontent.com/coinbase/onchainkit/main/site/docs/public/logo/v0-27.png" width="auto">
-  </picture>
-</p>
+# 🐂 Torito - Decentralized Lending Protocol
 
-# Onchain App Template
+Torito is a decentralized lending protocol built on Ethereum that enables users to supply collateral tokens and borrow fiat currencies with flexible repayment options and per-currency risk management.
 
-An Onchain App Template built with [OnchainKit](https://onchainkit.xyz), ready for deployment on Vercel.
+## 🚀 Features
 
-Demo: https://onchain-app-template.vercel.app
+### Core Functionality
+- Collateral Supply: Users can supply supported tokens (USDC, etc.) to earn yield through Aave integration
+- Fiat Currency Borrowing: Borrow multiple fiat currencies (USD, EUR, BOB, etc.) against supplied collateral
+- Partial Repayments: Flexible loan repayment system allowing users to repay loans in installments
+- Per-Currency Configuration: Each fiat currency has its own exchange rate, interest rate, and risk parameters
 
-## Quick Start
+### Risk Management
+- Dynamic LTV (Loan-to-Value): Real-time collateralization ratio checks using price oracles
+- Currency-Specific Risk Parameters: 
+  - Collateralization ratios per currency
+  - Liquidation thresholds per currency
+  - Interest rates per currency
+- Liquidation System: Automated liquidation of undercollateralized positions
+- Supply Health Checks: Prevents withdrawal of collateral needed for active loans
 
-### Deploy to Vercel
+### Technical Features
+- Upgradeable Architecture: Uses OpenZeppelin's Transparent Proxy pattern for future upgrades
+- Oracle Integration: Price feeds for accurate collateral valuation
+- Aave Integration: Yield generation through Aave's lending pool
+- Reentrancy Protection: Secure against reentrancy attacks
+- Pausable: Emergency pause functionality for security
 
-Deploy directly to Vercel with one click:
+## 🏗 Architecture
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fonchain-app-template%23)
+### Smart Contracts
 
-**Note:** Configure environment variables in Vercel project settings after deployment.
+#### Torito.sol - Main Contract
+The core lending protocol contract with the following key components:
 
-## Manual Setup
+Storage Structure:
+- supplies[user][token] - User's supply records per token
+- borrows[user][currency] - User's borrow records per currency
+- supportedCurrencies[currency] - Per-currency configuration
 
-### Environment Variables
+Key Structs:
 
-Configure a `.env` file with the following variables (reference `.env.local.example`):
+struct Supply {
+    address owner;
+    uint256 amount;
+    uint256 aaveLiquidityIndex;
+    address token;
+    SupplyStatus status;
+    uint256 timestamp;
+    uint256 lastUpdateTimestamp;
+}
 
-```sh
-# Obtain from https://portal.cdp.coinbase.com/products/onchainkit
-NEXT_PUBLIC_CDP_API_KEY="GET_FROM_COINBASE_DEVELOPER_PLATFORM"
+struct Borrow {
+    address owner;
+    uint256 borrowedAmount;
+    address collateralToken;
+    bytes32 fiatCurrency;
+    uint256 interestAccrued;
+    uint256 totalRepaid;
+    BorrowStatus status;
+    uint256 timestamp;
+    uint256 collateralAmount;
+    uint256 lastInterestUpdate;
+    uint256 lastRepaymentTimestamp;
+}
 
-# Obtain from https://cloud.walletconnect.com
-NEXT_PUBLIC_WC_PROJECT_ID="GET_FROM_WALLET_CONNECT"
-```
+struct FiatCurrency {
+    bytes32 currency;
+    uint256 currencyExchangeRate;
+    uint256 interestRate;
+    address oracle;
+    uint256 collateralizationRatio;
+    uint256 liquidationThreshold;
+}
 
-You can obtain the API key from the [Coinbase Developer Portal's OnchainKit page](https://portal.cdp.coinbase.com/products/onchainkit). If you don't have an account, you will need to create one.
 
-For the Wallet Connector project ID, visit [Wallet Connect](https://cloud.walletconnect.com) and create/access your project.
+### Mock Contracts
+- MockAavePool.sol - Simulates Aave lending pool interactions
+- MockPriceOracle.sol - Provides price feeds for testing
 
-### Local Development
+## 📋 Usage
 
-```sh
-# Install bun
-curl -fsSL https://bun.sh/install | bash
+### For Users
+
+#### 1. Supply Collateral
+
+// Approve tokens first
+usdc.approve(address(torito), amount);
+// Supply tokens
+torito.supply(address(usdc), amount);
+
+
+#### 2. Borrow Fiat Currency
+
+// Borrow USD against USDC collateral
+torito.borrow(address(usdc), borrowAmount, bytes32("USD"));
+
+
+#### 3. Repay Loan (Partial or Full)
+
+// Partial repayment
+torito.repayLoan(bytes32("USD"), partialAmount);
+// Full repayment
+torito.repayLoan(bytes32("USD"), fullAmount);
+
+
+#### 4. Withdraw Supply
+
+// Withdraw available supply (respects LTV requirements)
+torito.withdrawSupply(address(usdc), amount);
+
+
+### For Administrators
+
+#### 1. Configure Supported Currencies
+
+torito.setSupportedCurrency(
+    bytes32("USD"),
+    1e18,           // Exchange rate to USD
+    50000000000000000, // 5% annual interest rate
+    oracleAddress,  // Price oracle
+    1500000000000000000, // 150% collateralization ratio
+    1300000000000000000  // 130% liquidation threshold
+);
+
+
+#### 2. Update Risk Parameters
+
+torito.updateCurrencyInterestRate(bytes32("USD"), newRate);
+torito.updateCurrencyCollateralizationRatio(bytes32("USD"), newRatio);
+torito.updateCurrencyLiquidationThreshold(bytes32("USD"), newThreshold); 
+## 🔧 Development
+
+### Prerequisites
+- [Bun](https://bun.sh/) - Fast all-in-one JavaScript runtime & toolkit
+- Node.js 18+ (recommended)
+
+### Setup
+
+# Clone the repository
+git clone <repository-url>
+cd torito
 
 # Install dependencies
-bun i
+bun install
 
 # Start development server
 bun run dev
-```
 
-## Resources
+# Run tests
+bun test
 
-- [OnchainKit Cursor Rules](https://cursor.directory/onchainkit)
-- [OnchainKit llms.txt](https://docs.base.org/builderkits/onchainkit/llms.txt)
-- [OnchainKit Documentation](https://onchainkit.xyz)
-- [OnchainKit Early Adopter Contract](https://github.com/neodaoist/onchainkit-early-adopter) by neodaoist [[X]](https://x.com/neodaoist)
 
-## License
+### Testing
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+# Run all tests
+bun test
 
-## Support
+# Run specific test
+bun test supply
 
-For assistance, please contact us through:
-- [Discord](https://discord.gg/8gW3h6w5)
-- [GitHub Issues](https://github.com/coinbase/onchainkit/issues)
-- X: [@onchainkit](https://x.com/onchainkit), [@zizzamia](https://x.com/zizzamia), [@fkpxls](https://x.com/fkpxls)
+# Run tests with watch mode
+bun test --watch
+
+
+### Deployment
+
+# Deploy to local network
+forge script script/Torito.s.sol:ToritoScript --rpc-url http://localhost:8545 --private-key <private_key>
+
+# Deploy to testnet
+forge script script/Torito.s.sol:ToritoScript --rpc-url <testnet_rpc> --private-key <private_key> --broadcast
+
+
+## 🔒 Security Features
+
+### Access Control
+- OwnableUpgradeable - Administrative functions restricted to owner
+- PausableUpgradeable - Emergency pause functionality
+- ReentrancyGuardUpgradeable - Protection against reentrancy attacks
+
+### Risk Management
+- LTV Checks: Prevents over-collateralization
+- Oracle Integration: Real-time price feeds for accurate valuations
+- Liquidation System: Automated protection against bad debt
+- Supply Health Validation: Ensures sufficient collateral for active loans
+
+### Upgradeability
+- Transparent Proxy Pattern: Allows future upgrades while preserving state
+- Initialization Pattern: Proper initialization of upgradeable contracts
+
+## 📊 Key Metrics
+
+### Per-Currency Configuration
+- Exchange Rates: Dynamic rates relative to USD
+- Interest Rates: Annual rates per currency (e.g., 5% for USD, 8% for BOB)
+- Collateralization Ratios: Minimum collateral required (e.g., 150% for USD)
+- Liquidation Thresholds: Trigger points for liquidation (e.g., 130% for USD)
+
+### Supply Management
+- One Record Per (User, Token): Efficient storage and management
+- Yield Generation: Integration with Aave for passive income
+- Health Checks: Real-time validation of withdrawal eligibility
+
+### Borrow Management
+- One Record Per (User, Currency): Simplified loan tracking
+- Partial Repayments: Flexible repayment options
+- Interest Accrual: Real-time interest calculation
+
+## 🚨 Emergency Procedures
+
+### Pause Protocol
+
+// Pause all operations
+torito.pause();
+
+// Resume operations
+torito.unpause();
+
+
+### Liquidation
+
+// Liquidate undercollateralized position
+torito.liquidate(userAddress, currency);
+
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
+
+For detailed development setup and commands, see [DEVELOPMENT.md](./DEVE LOPMENT.md).
