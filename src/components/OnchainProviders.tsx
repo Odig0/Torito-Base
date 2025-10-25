@@ -19,7 +19,10 @@ function OnchainProviders({ children }: Props) {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <OnchainKitProvider apiKey={NEXT_PUBLIC_CDP_API_KEY} chain={baseSepolia}>
-          <RainbowKitProvider modalSize="compact">
+          <RainbowKitProvider
+            modalSize="compact"
+            initialChain={baseSepolia}
+          >
             {children}
           </RainbowKitProvider>
         </OnchainKitProvider>

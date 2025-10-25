@@ -3,6 +3,7 @@ import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 import {
   coinbaseWallet,
   rainbowWallet,
+  safeWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { useMemo } from 'react';
 import { http, createConfig } from 'wagmi';
@@ -22,7 +23,7 @@ export function useWagmiConfig() {
       [
         {
           groupName: 'Recommended Wallet',
-          wallets: [coinbaseWallet],
+          wallets: [coinbaseWallet, safeWallet],
         },
         {
           groupName: 'Other Wallets',
