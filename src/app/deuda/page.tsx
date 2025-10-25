@@ -96,7 +96,7 @@ export default function DeudaPage() {
           <div className="flex gap-4 flex-wrap justify-center">
             <BalancePill
               label={<>💰 Préstamo Original:</>}
-              value={`${fmt(totalDebtUSDT)} USDT`}
+              value={`${fmt(totalDebtUSDT)} USDC`}
               skeleton={false}
             />
             <BalancePill
@@ -138,8 +138,8 @@ export default function DeudaPage() {
               <h2 className="text-2xl font-bold text-purple-900 mb-4">📊 Resumen de tu préstamo</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <div className="text-sm text-gray-600 mb-1">Préstamo original (USDT)</div>
-                  <div className="text-2xl font-bold text-purple-700">{fmt(totalDebtUSDT)} USDT</div>
+                  <div className="text-sm text-gray-600 mb-1">Préstamo original (USDC)</div>
+                  <div className="text-2xl font-bold text-purple-700">{fmt(totalDebtUSDT)} USDC</div>
                   <div className="text-sm text-gray-500 mt-1">1 USDC = {exchangeRate} Bs</div>
                 </div>
                 <div className="bg-white rounded-xl p-4 shadow-sm">
