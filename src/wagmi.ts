@@ -4,10 +4,13 @@ import {
   coinbaseWallet,
   rainbowWallet,
   safeWallet,
+  walletConnectWallet,
+  metaMaskWallet,
+  injectedWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { useMemo } from 'react';
 import { http, createConfig } from 'wagmi';
-import {  baseSepolia } from 'wagmi/chains';
+import { avalanche } from 'wagmi/chains';
 import { NEXT_PUBLIC_WC_PROJECT_ID } from './config';
 
 export function useWagmiConfig() {
@@ -22,12 +25,17 @@ export function useWagmiConfig() {
     const connectors = connectorsForWallets(
       [
         {
-          groupName: 'Recommended Wallet',
-          wallets: [coinbaseWallet, safeWallet],
+          groupName: 'Recommended Wallets',
+          wallets: [
+            walletConnectWallet,
+            coinbaseWallet,
+            safeWallet,
+            metaMaskWallet,
+          ],
         },
         {
           groupName: 'Other Wallets',
-          wallets: [rainbowWallet],
+          wallets: [rainbowWallet, injectedWallet],
         },
       ],
       {
@@ -37,13 +45,14 @@ export function useWagmiConfig() {
     );
 
     const wagmiConfig = createConfig({
-      chains: [baseSepolia],
-      // turn off injected provider discovery
-      multiInjectedProviderDiscovery: false,
+      chains: [avalanche],
+      // enable injected provider discovery so injected wallets (eg. Core Wallet)
+      // are detected and available in the modal
+      multiInjectedProviderDiscovery: true,
       connectors,
       ssr: true,
       transports: {
-        [baseSepolia.id]: http(),
+        [avalanche.id]: http(),
       },
     });
 

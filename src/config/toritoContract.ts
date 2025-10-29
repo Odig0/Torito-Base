@@ -11,7 +11,7 @@ export const BASE_SEPOLIA_CHAIN_ID = 84532;
 // Este es un token ERC20 de prueba que puedes usar para testing
 // Puedes obtener tokens desde https://faucet.circle.com/
 export const TORITO_ABI = TORITO;
-export const USDC_TOKEN_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as `0x${string}`;
+export const USDC_TOKEN_ADDRESS = '0x8964c51116010B33F5C3f2Dc1D8A62749E432566' as `0x${string}`;
 // Helper para convertir string a bytes32 (para currency)
 export function stringToBytes32(text: string): `0x${string}` {
   // Convertir texto a hex y pad a 32 bytes
